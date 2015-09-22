@@ -33,7 +33,7 @@ Node has an asynchronousevent-driven I/O model. Node is an interface to the V8 J
 This is a pretty good intro video:  
 [What is Node.js Exactly? - a beginners introduction to Nodejs](https://www.youtube.com/watch?v=pU9Q6oiQNd0)
 
-Node v4.0.0 is now available and supports lots of ES6 features. . 
+Node v4.0.0 is now available and supports lots of ES6 features. .
 
 ### So what is a server??
 
@@ -172,17 +172,63 @@ var MyModule = require('./myModule.js');
 MyModule.One();
 
 ```
+Node modules and Javascript files do not need an extension (e.g. 'js') when being specified inside `require()`.  However it can be helpful to add '.js' to the end of your local javscript files so it's easier to differentiate between your own files and node modules.
+
+E.g.
+
+```
+var http = require('http');
+var myFile = require('myFile.js');
+
+```
 
 Inside `require` the relative path to the file needs to be specified:
 
 ```js
 ./[filename] for a file in the same directory
 ../[filename] for a file in the directory above the current file
-
 ```
+This is explained in more detail in the [Node Docs](https://nodejs.org/api/modules.html#modules_file_modules)
 
 ## Install the NodeJS version manager module
 
 `npm install -g n`
 
 Use this to set which version of node you are running.
+
+## Create your first http server!
+
+Node.js has several modules compiled into the binary e.g. 'http', 'fs', . These are called 'core modules'.  
+Core modules are always preferentially loaded.  For instance, require('http') will always return the built in HTTP module, even if there is a file by that name.
+
+```js
+var http = require('http');
+
+// set the port for the server
+var port = process.env.PORT || 3000;
+```
+
+```js
+http.createServer(function handler(request, response) {
+    //display 'HELLO WORLD' when the user is on the home page
+    var url = request.url; //e.g. '/'
+    if (url.length === 1) {
+    response.writeHead(200, {"Content-Type": "text/html"});
+    response.end("HELLO WORLD!");
+  }
+}).listen(port);
+
+console.log('node http server listening on http://localhost:' + port);
+```
+
+
+## Reading from the file system
+
+We're going to create an index.html file and then serve it up when the user navigates to the home page.
+
+First import the 'fs' core node module.
+
+```js
+var fs = require('fs');
+var index = fs.readFileSync(__dirname + '/index.html');
+```
