@@ -28,12 +28,13 @@ Wikipedia says:
 > Google’s V8 JavaScript engine, the libuv
 > platform abstraction layer, and a core library, which is itself primarily written in JavaScript.
 
-Node has an asynchronousevent-driven I/O model. Node is an interface to the V8 JavaScript runtime – the JavaScript interpreter that runs in the Chrome browser.
+Node has an asynchronous, event-driven I/O model. Node is an interface to the V8 JavaScript runtime – the JavaScript interpreter that runs in the Chrome browser.
 
 This is a pretty good intro video:  
 [What is Node.js Exactly? - a beginners introduction to Nodejs](https://www.youtube.com/watch?v=pU9Q6oiQNd0)
 
-Node v4.0.0 is now available and supports lots of ES6 features. .
+Node v4.0.0 is now available and supports lots of ES6 features.
+(ES6 - aka ECMAScript 6 or ECMAScript 2015 - is a newer version of JavaScript with a bunch of new features.  It's not 100% supported everywhere yet, but it will be eventually).
 
 ### So what is a server??
 
@@ -45,14 +46,16 @@ Download Node from the [NodeJS website](https://docs.npmjs.com/getting-started/i
 
 ## Node Modules and the Node Package Manager (NPM)
 
+Modules are just small programs you can integrate with the bigger program you are writing.
+
+'Core' Node modules come with Node automatically.  But there are thousands of open-source, 3rd-party Node modules that other clever people have written.  You can download useful 3rd-party modules (packages) from NPM.
 
 > ***npm*** makes it easy for JavaScript
 > developers to share and reuse code, and it
 > makes it easy to update the code that
 > you're sharing.
 
-
-Node comes with npm installed but However, npm gets updated more frequently than Node does so make sure it's the latest version.
+Node comes with npm installed.  However, npm gets updated more frequently than Node does so make sure it's the latest version.
 
 ```js
 sudo npm install npm -g
@@ -69,7 +72,7 @@ Type this command into your terminal in the folder you want to create the projec
 npm init
 ```
 
-This creates a file called a `package.json` which is a json object that contains information about your project and its dependancies. It looks a bit like this:
+This creates a file called a `package.json` which is a json object that contains information about your project and its dependencies. It looks a bit like this:
 
 ```js
 {
@@ -102,6 +105,7 @@ This creates a file called a `package.json` which is a json object that contains
 }
 
 ```
+The package.json is the file that makes it possible for others to install and run your project, once you've built it.  When someone installs your project, npm will look through the package.json and install any modules that your project depends on, hence the name *dependencies*.
 
 ### Installing node modules
 
@@ -109,7 +113,7 @@ This creates a file called a `package.json` which is a json object that contains
 npm install <NAME OF MODULE> --save
 ```
 
-This installs the node modules files into a folder called `node_modules` and saves the name of the module into the `dependancies` in the package.json.
+This installs the node modules files into a folder called `node_modules`.  The `--save` flag saves the name of the module into the `dependencies` in the package.json.  You can leave out the `--save` flag, but then you would have to remember to add the module to your package.json manually.
 
 The version of the module is also shown using the ['Semver Rule'](https://docs.npmjs.com/getting-started/semantic-versioning)
 
@@ -125,7 +129,7 @@ npm i
 
 This installs the modules listed in your package.json to the node_modules folder.
 
-Remember to add `node_modules` to your `.gitignore` file so you don't push all the node module files up to Github!
+Remember to add `node_modules` to your `.gitignore` file so you don't push all the node module files up to Github!  Remember, the package.json is all someone would need to run your project.
 
 Once the package is in node_modules, you can use it in your code.
 
