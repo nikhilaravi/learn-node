@@ -43,6 +43,18 @@ Node v4.0.0 is now available and supports lots of ES6 features. If you want to l
 
 Download Node from the [NodeJS website](https://docs.npmjs.com/getting-started/installing-node)
 
+### The interactive node.js shell
+
+If node is installed properly, you should be able to invoke the interactive node.js shell like this:
+
+```js
+$ node
+> console.log('Hello World');
+Hello World
+```
+
+The shell is a great way to test simple one liners. In order to escape, simply press Ctrl + C.
+
 ## Node Modules and the Node Package Manager (NPM)
 
 The npm website says:
@@ -54,10 +66,17 @@ The npm website says:
 
 Node comes with npm installed however, npm gets updated more frequently than Node does so make sure it's the latest version.
 
+Check the version
+```js
+$ npm --version
+```
+
+Then type:
+
 ```js
 sudo npm install npm -g
 ```
-The `-g` flag means npm will be installed globally so not just for a particular project.
+By default, npm installs any dependency in the local mode. Here local mode refers to the package installation in node_modules directory lying in the folder where Node application is present. The `-g` flag means npm will be installed globally so not just for a particular project.
 
 Now you can use npm to create and install external modules for your projects.
 
@@ -106,6 +125,28 @@ This takes you through the process of creating a file called a `package.json` wh
 }
 
 ```
+
+Key attributes:
+
+name - name of the package
+
+version - version of the package
+
+description - description of the package
+
+homepage - homepage of the package
+
+author - author of the package
+
+contributors - name of the contributors to the package
+
+dependencies - list of dependencies. npm automatically installs all the dependencies mentioned here in the node_module folder of the package.
+
+repository - repository type and url of the package
+
+main - entry point of the package
+
+keywords - keywords
 
 IMPORTANT THINGS TO REMEMBER:
 
@@ -246,6 +287,14 @@ var index = fs.readFileSync(__dirname + '/index.html');
 
 # Extensions
 
+## EventEmitters
+
+
+
+## Streams
+
+Look up the CreateReadableStream and CreateWritableStream functions
+
 ## Install the NodeJS version manager module
 
 `npm install -g n`
@@ -272,7 +321,3 @@ npm install --save env2
 ```
 
 Require the `env2` module into your server file.
-
-## Streams in Node
-
-Look up the CreateReadableStream and CreateWritableStream functions
