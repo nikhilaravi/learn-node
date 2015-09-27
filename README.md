@@ -36,11 +36,22 @@ This is a pretty good intro video:
 Node v4.0.0 is now available and supports lots of ES6 features.
 (ES6 - aka ECMAScript 6 or ECMAScript 2015 - is a newer version of JavaScript with a bunch of new features.  It's not 100% supported everywhere yet, but it will be eventually).
 
-If you want to learn ES6 Look up @benjaminlees [tutorial](https://github.com/benjaminlees/Es6)!
+If you want to learn ES6 Look up [@benjaminlees](https://github.com/nelsonic)'s [tutorial](https://github.com/benjaminlees/Es6)!
 
-### So what is a server??
+### So what is a server? And why do I need one?
 
 ***Servers*** are computer programs that receive requests from other programs, ***the clients*** and send back a response e.g share data, information or hardware and software resources.
+
+In a typical web app a server could perform some of these functions:
+
+* Handle manipulation of data in the database
+* File manipulation
+* Authentication
+* Lots of secret logic
+
+Client side code sends requests to a server which sends back data to the front end which can then be displayed.
+
+Front end Javascript is executed in the site visitor's browser whereas server-side code runs on a site's web server
 
 ## Installing Node
 
@@ -77,9 +88,10 @@ Check the version
 
 ```js
 $ npm --version
+// the version should be 3.3.4
 ```
 
-Then type:
+If it is not the latest version then type:
 
 ```js
 sudo npm install npm -g
@@ -128,8 +140,11 @@ This takes you through the process of creating a file called a `package.json` wh
     "url": "https://github.com/nikhilaravi/autocomplete/issues"
   },
   "homepage": "https://github.com/nikhilaravi/autocomplete",
+  "engines": {
+    "node": ">= 0.10"
+  },
   "dependancies": {
-    "node":
+     "pre-commit": "^1.0.7"
   }
 }
 
@@ -187,12 +202,11 @@ var mandrill = require('mandrill'); //Mandrill is a module for setting up an ema
 
 ## Structuring a module
 
-Good practice for modules is to create one object in your file that contains all the methods and return only the methods. This way all the variables aren't exposed and can't be modified by other files.
+Good practice for modules is to create an object in your file with an immediately invoked function (IIFE) that returns only the methods. This way all the variables aren't exposed and can't be modified by other files.
 
 ```js
-var Library = {
-
-  books: {
+var Library = (function() {
+  var books = {
     "Emma": {
       author: 'Jane Austen',
       published: 'December 25, 1815'
@@ -202,28 +216,30 @@ var Library = {
       author: 'JK Rowling',
       published: 'July 8, 2000'
     }
-  }
+  };
 
-  getBookAuthor: function(name) {
+  function getBookAuthor = function(name) {
     return books[name].author
-  },
+  };
 
-  getDatePublished: function() {
+  function getDatePublished = function() {
     return books[name].published
-  },
+  };
 
   return {
     getBook: getBook,
     getDatePublished: getDatePublished
   }
-}
+
+}());
 
 ```
 To enable the functions to be used by other files, you need to export the object. Save this file as e.g. library.js. Other files can then import this file and use the methods returned.
 
-Add this line to the end of myModule.js:
+Add this line to the end of library.js:
 
 ```js
+
 module.exports = Library;
 
 ```
@@ -272,19 +288,22 @@ var port = process.env.PORT || 8000;
 ```
 
 ```js
-http.createServer(function handler(request, response) {
+
+function handler(request, response) {
     //display 'HELLO WORLD' when the user is on the home page
     var url = request.url; //e.g. '/'
     if (url.length === 1) {
     response.writeHead(200, {"Content-Type": "text/html"});
     response.end("HELLO WORLD!");
   }
-}).listen(port);
+}
+
+http.createServer(handler).listen(port);
 
 console.log('node http server listening on http://localhost:' + port);
 ```
 
-Inside the call to `http.createServer()' we pass in a function that gets called every time someone connects to the app. The function takes two parameters:
+Inside the call to `http.createServer()' we pass in a handler function that gets called every time someone connects to the app. The function takes two parameters:
 
 * ***request*** - this object contains the information about what the visitor asked for including  name of the page that was requested, the settings, and any fields filled in on a form.
 
@@ -353,7 +372,7 @@ var request = new XMLHttpRequest();
 On the server you would look at the url of the request:
 
 ```js
-http.createServer(request, response) {
+function(request, response) {
   var url = request.url
   if (url.indexOf('/cat') > -1) {
     // check if the url contains /cat and if so send back a link to a cat image e.g. from a database or an API
@@ -404,7 +423,7 @@ In the scripts part of your package.json add the following line:
 
 ## Event Loop and EventEmitters
 
-If you make a post request and send some data with the request you need a way of reading the data on the server side. For this you need to listen for the 'data' event on the request. 
+If you make a post request and send some data with the request you need a way of reading the data on the server side. For this you need to listen for the 'data' event on the request.
 
 ```js
 var requestData = '';
@@ -417,7 +436,7 @@ request.on('data', function(chunk) {
 
 If you are using APIs, you don't want to push the API Keys up to Github. To keep the keys secret we want to save them as environment variables.
 
-Follow @nelsonic's tutorial to learn how this works!
+Follow [@nelsonic](https://github.com/nelsonic)'s tutorial to learn how this works!
 [https://github.com/dwyl/learn-environment-variables](https://github.com/dwyl/learn-environment-variables)
 
 ## Install the Node.js version manager module
