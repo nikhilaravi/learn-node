@@ -287,7 +287,7 @@ var index = fs.readFileSync(__dirname + '/index.html');
 
 # Extensions
 
-## EventEmitters
+## Event Loop and EventEmitters
 
 
 
