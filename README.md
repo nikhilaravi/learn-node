@@ -210,24 +210,27 @@ var Library = (function() {
     "Emma": {
       author: 'Jane Austen',
       published: 'December 25, 1815'
-
     },
     "Harry Potter and the Goblet of Fire": {
       author: 'JK Rowling',
       published: 'July 8, 2000'
+    },
+    "Eloquent Javascript": {
+      author: 'Marijn Haverbeke',
+      published: '2011'
     }
   };
 
-  function getBookAuthor = function(name) {
+  function getBookAuthor(name) {
     return books[name].author
   };
 
-  function getDatePublished = function() {
+  function getDatePublished(name) {
     return books[name].published
   };
 
   return {
-    getBook: getBook,
+    getBookAuthor: getBookAuthor,
     getDatePublished: getDatePublished
   }
 
@@ -244,7 +247,7 @@ module.exports = Library;
 
 ```
 
-In another file:
+In another file (e.g. librarian.js):
 
 ```js
 var Library = require('./library.js');
@@ -287,6 +290,10 @@ var http = require('http');
 var port = process.env.PORT || 8000;
 ```
 
+This loads in the `http` module which we will use to create a web server that processes requests using HTTP.
+
+We then need to create handlers that will process the requests.
+
 ```js
 
 function handler(request, response) {
@@ -309,7 +316,7 @@ Inside the call to `http.createServer()' we pass in a handler function that gets
 
 * ***response*** - this is the object which contains the information that you send back to the user.
 
-`res.writeHead(200)` sends back a status code of 200 in the response header to say that everything is okay.
+`response.writeHead(200)` sends back a status code of 200 in the response header to say that everything is okay.
 
 Now start the server! In the command line type:
 
@@ -345,7 +352,7 @@ var index = fs.readFileSync(__dirname + '/index.html');
 Then send back the html file in the response. Change the call to `res.end` to be:
 
 ```js
-res.end(index)
+response.end(index)
 ```
 
 Restart the server and you should see the page from index.html!
@@ -376,7 +383,7 @@ function(request, response) {
   var url = request.url
   if (url.indexOf('/cat') > -1) {
     // check if the url contains /cat and if so send back a link to a cat image e.g. from a database or an API
-    res.end("http://charts.stocktwits.com/production/original_24310845.jpg?1404265667")    
+    response.end('<img src="http://charts.stocktwits.com/production/original_24310845.jpg?1404265667"/>')    
   }
 }
 ```
@@ -390,7 +397,25 @@ var type = url.split('/')[2].toString();
 
 ## Generic route handler
 
-When you add css or js files in your index.html they won't load the same was as just a pure front end app. You need to create a route in your server to serve these files
+When you add css or js files in your index.html they won't load the same as just a pure front end app. You need to create a route in your server to serve these files
+
+Modify your index.html to add a `main.css` file and a `script.js` file e.g.
+
+```js
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="main.css">
+  </head>
+  <body>
+    <h1>Hello</h1>
+    <img src="http://www.harmonycentral.com/forum/filedata/fetch?id=31139011&d=1398720429"/>
+    <script src="script.js"></script>
+  </body>
+</html>
+```
+
+Add the following code to your server handler as a final else branch. 
 
 ```js
 fs.readFile(__dirname + url, function(err, file){
