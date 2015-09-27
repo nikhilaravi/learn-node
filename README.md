@@ -28,12 +28,15 @@ Wikipedia says:
 > Google’s V8 JavaScript engine, the libuv
 > platform abstraction layer, and a core library, which is itself primarily written in JavaScript.
 
-Node has an asynchronous event-driven I/O model. Node is an interface to the V8 JavaScript runtime – the JavaScript interpreter that runs in the Chrome browser.
+Node has an asynchronous, event-driven I/O model. Node is an interface to the V8 JavaScript runtime – the JavaScript interpreter that runs in the Chrome browser.
 
 This is a pretty good intro video:  
 [What is Node.js Exactly? - a beginners introduction to Nodejs](https://www.youtube.com/watch?v=pU9Q6oiQNd0)
 
-Node v4.0.0 is now available and supports lots of ES6 features. If you want to learn ES6 Look up @benjaminlees tutorial!
+Node v4.0.0 is now available and supports lots of ES6 features.
+(ES6 - aka ECMAScript 6 or ECMAScript 2015 - is a newer version of JavaScript with a bunch of new features.  It's not 100% supported everywhere yet, but it will be eventually).
+
+If you want to learn ES6 Look up @benjaminlees [tutorial](https://github.com/benjaminlees/Es6)!
 
 ### So what is a server??
 
@@ -45,7 +48,7 @@ Download Node from the [NodeJS website](https://docs.npmjs.com/getting-started/i
 
 ### The interactive node.js shell
 
-If node is installed properly, you should be able to invoke the interactive node.js shell like this:
+If node is installed properly, you should be able to invoke the interactive node.js shell by typing `node` into the command line. You can then type any Javascript code and it will be executed.
 
 ```js
 $ node
@@ -53,20 +56,25 @@ $ node
 Hello World
 ```
 
-The shell is a great way to test simple one liners. In order to escape, simply press Ctrl + C.
+The shell is a great way to test simple one liners. In order to escape from the shell, simply press Ctrl + C.
 
 ## Node Modules and the Node Package Manager (NPM)
 
-The npm website says:
+Modules are just small programs you can integrate with the bigger program you are writing.
+
+'Core' Node modules come with Node automatically.  But there are thousands of open-source, 3rd-party Node modules that other clever people have written.  You can download useful 3rd-party modules (packages) from the Node Package Manager.
+
+The NPM website says:
 
 > ***npm*** makes it easy for JavaScript
 > developers to share and reuse code, and it
 > makes it easy to update the code that
 > you're sharing.
 
-Node comes with npm installed however, npm gets updated more frequently than Node does so make sure it's the latest version.
+Node comes with npm installed.  However, npm gets updated more frequently than Node does so make sure it's the latest version.
 
 Check the version
+
 ```js
 $ npm --version
 ```
@@ -76,9 +84,10 @@ Then type:
 ```js
 sudo npm install npm -g
 ```
-By default, npm installs any dependency in the local mode. Here local mode refers to the package installation in node_modules directory lying in the folder where Node application is present. The `-g` flag means npm will be installed globally so not just for a particular project.
 
-Now you can use npm to create and install external modules for your projects.
+By default, npm installs any dependency in the local mode -  the node_modules directory in the folder where Node application is present. The `-g` flag means npm will be installed globally so not just for a particular project.
+
+Now you can use npm to create and install external modules for your project!
 
 ### Creating a new NodeJS projects
 
@@ -125,48 +134,43 @@ This takes you through the process of creating a file called a `package.json` wh
 }
 
 ```
+The package.json is the file that makes it possible for others to install and run your project, once you've built it.  When someone installs your project, npm will look through the package.json and install any modules that your project depends on, hence the name *dependencies*.
 
-Key attributes:
+Key attributes in the package.json:
 
-name - name of the package
+* name
+* version
+* description
+* homepage
+* author
+* contributors
+* scripts - these are commands that you define. You can run them from the command line using `npm run <NAMEOFSCRIPT>`. We'll use this to run tests and start our server
+* dependencies
+* repository - repository type and url of the git repository
+* main
+* keywords
 
-version - version of the package
+```
 
-description - description of the package
-
-homepage - homepage of the package
-
-author - author of the package
-
-contributors - name of the contributors to the package
-
-dependencies - list of dependencies. npm automatically installs all the dependencies mentioned here in the node_module folder of the package.
-
-repository - repository type and url of the package
-
-main - entry point of the package
-
-keywords - keywords
-
-IMPORTANT THINGS TO REMEMBER:
+Remember:
 
 * You can't add comments to a .json file!
-* Watch out for trailing commas in your json object!
+* Watch out for trailing commas in your json object as this will cause errors when trying to `npm install`!
 
-### Installing node modules
+### Installing new node modules
 
 ```js
 npm install <NAME OF MODULE> --save
 
 ```
 
-This installs the node modules files into a folder called `node_modules` and saves the name of the module into the `dependancies` in the package.json.
+This creates a folder called `node_modules` within your project and installs the node module's files in it.  The `--save` flag saves the name of the module into the `dependencies` in the package.json.  You can leave out the `--save` flag, but then you would have to remember to add the module to your package.json manually.
 
 The version of the module is also shown using the ['Semver Rule'](https://docs.npmjs.com/getting-started/semantic-versioning)
 
-Remember to add `node_modules` to your `.gitignore` file so you don't push all the node module files up to Github!
+Remember to add `node_modules` to your `.gitignore` file so you don't push all the node module files up to Github!  The package.json is all someone would need to run your project. Once the package is in node_modules, you can use it in your code.
 
-When you clone a NodeJS project or pull down the latest version of your project from GitHub you should install any new node modules using the command.
+When you clone a Node.js project or pull down the latest version of your project from GitHub you should install any new node modules using the command.
 
 ```js
 npm install
@@ -176,9 +180,7 @@ or
 npm i
 ```
 
-This installs the modules listed in your package.json to the node_modules folder.
-
-Once the package is in the `node_modules` folder, you can use it in your code.
+This installs the modules listed in your package.json to the node_modules folder e.g.
 
 ```
 var mandrill = require('mandrill'); //Mandrill is a module for setting up an email client
@@ -236,24 +238,29 @@ var myFile = require('myFile.js');
 
 ```
 
-Inside the call to `require`, the relative path to the file needs to be specified:
+Inside the call to `require`, the path to the file needs to be specified.
 
-```js
-./[filename] for a file in the same directory
-../[filename] for a file in the directory above the current file
-```
+> A required module prefixed with '/' is an absolute path to the file. For > example, require('/home/marco/foo.js') will load the file at /home/marco/foo.js.
+
+> A required module prefixed with './' is relative to the file calling > require(). That is, circle.js must be in the same directory as foo.js for > require('./circle') to find it.
+
+Use the '../' prefix for a file in the directory above the current file. 
+
 Relative paths are explained in more detail in the [Node Docs](https://nodejs.org/api/modules.html#modules_file_modules)
 
 ## Create your first http server!
 
 Node.js has several modules compiled into the binary e.g. 'http', 'fs', . These are called 'core modules'.  
+
 Core modules are always preferentially loaded.  For instance, require('http') will always return the built in HTTP module, even if there is a file by that name.
+
+Create a file called server.js and add the following code:
 
 ```js
 var http = require('http');
 
 // set the port for the server
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8000;
 ```
 
 ```js
@@ -269,25 +276,109 @@ http.createServer(function handler(request, response) {
 console.log('node http server listening on http://localhost:' + port);
 ```
 
+Inside the call to `http.createServer()' we pass in a function that gets called every time someone connects to the app. The function takes two parameters:
+
+* request  this object contains the information about what the visitor asked for including  name of the page that was requested, the settings, and any fields filled in on a form.
+
+* response - this is the object which contains the information that you send back to the user.
+
+`res.writeHead(200)` sends back a status code of 200 in the response header to say that everything is okay.
+
+Now start the server! In the command line type:
+
+```
+node server.js
+
+```
+
+In the browser navigate to `http://localhost:8000`. You should see your 'Hello world' message!
+
 ## Reading from the file system
 
-We're going to create an index.html file and then serve it up when the user navigates to the home page.
+We're going to create an index.html file and then serve it up when the user navigates to the home page. You can use the template below or create your own!
 
-First import the 'fs' core node module. This allows reading and writing to the file system.
+```js
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Hello World!</h1>
+  </body>
+</html>
+```
 
-We read in the index.html file and save it as a variable.
+Back to our server file. Import the 'fs' core node module - this allows reading and writing to the file system.
 
-`__dirname` is used to get the directory name  
+Then read in the index.html file and save it as a variable. `__dirname` is used to get the name of the directory that the currently file resides in.
 
 ```js
 var fs = require('fs');
 var index = fs.readFileSync(__dirname + '/index.html');
 ```
 
+Then send back the html file in the response. Change the call to `res.end` to be:
+
+```js
+res.end(index)
+```
+
+Restart the server and
+
+## Server Routes
+
+For different requests might want to carry out diferent functions or retrive specific data. These can be specified through the URL of the request and you can create specific routes in your server to handle these requests.
+
+Lets look at an example:
+
+You have a button that when clicked sends an http request to /cat
+
+http request would look something like this:
+
+On the server you would look at the url:
+
+```js
+http.createServer(request, response) {
+  var url = request.url
+  if (url.indexOf('/cat') > -1) {
+    // check if the url contains /cat and if so send back a link to a cat image e.g. from a database or an API
+    res.end("http://charts.stocktwits.com/production/original_24310845.jpg?1404265667")    
+  }
+}
+```
+
+## Generic route handler
+
+When you add css or js files in your index.html they won't load the same was as just a pure front end app. You need to create a route in your server to serve these files
+
+```js
+fs.readFile(__dirname + url, function(err, file){
+      if (err){
+          response.end();
+      } else {
+          var ext = url.split('.')[1];
+          response.writeHead(200, {'Content-Type' : 'text/' + ext});
+          response.end(file);
+  }
+}
+```
+
+## Nodemon
+
+Instead of having to restart the server every time you change any of your code you can install a module that will monitor for any changes in your javascript files and automatically restart the server!
+
+```js
+npm install -g nodemon
+```
+
+In the scripts part of your package.json add the following line:
+```js
+ "start": "nodemon server.js"
+ ```
+
+ You can then start the server by typing `npm start` in the command line.
 
 # Extensions
 
-## EventEmitters
+## Event Loop and EventEmitters
 
 
 
