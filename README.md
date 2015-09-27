@@ -150,8 +150,6 @@ Key attributes in the package.json:
 * main
 * keywords
 
-```
-
 Remember:
 
 * You can't add comments to a .json file!
@@ -189,43 +187,53 @@ var mandrill = require('mandrill'); //Mandrill is a module for setting up an ema
 
 ## Structuring a module
 
-Good practice for modules is to create one object in your file that contains all the methods and return only the methods. This way all the variables aren't exposed.
+Good practice for modules is to create one object in your file that contains all the methods and return only the methods. This way all the variables aren't exposed and can't be modified by other files.
 
 ```js
-var MyModule = {
+var Library = {
 
-  textOne: "Hello",
-  textTwo: "World",
+  books: {
+    "Emma": {
+      author: 'Jane Austen',
+      published: 'December 25, 1815'
 
-  One: function() {
-    console.log(textOne);
+    },
+    "Harry Potter and the Goblet of Fire": {
+      author: 'JK Rowling',
+      published: 'July 8, 2000'
+    }
+  }
+
+  getBookAuthor: function(name) {
+    return books[name].author
   },
 
-  Two: function() {
-    console.log(textOne);
+  getDatePublished: function() {
+    return books[name].published
   },
 
   return {
-    One: One,
-    Two: Two
+    getBook: getBook,
+    getDatePublished: getDatePublished
   }
 }
+
 ```
-To enable the functions to be used by other files, you need to export the object. Save this file as e.g. myModule.js. Other files can then import this file and use the methods returned.
+To enable the functions to be used by other files, you need to export the object. Save this file as e.g. library.js. Other files can then import this file and use the methods returned.
 
 Add this line to the end of myModule.js:
 
 ```js
-module.exports = MyModule;
+module.exports = Library;
 
 ```
 
 In another file:
 
 ```js
-var MyModule = require('./myModule.js');
+var Library = require('./library.js');
 
-MyModule.One();
+Library.getBookAuthor("Emma");
 
 ```
 Node modules and Javascript files do not need an extension (e.g. 'js') when being specified inside `require()`.  However it can be helpful to add '.js' to the end of your local javscript files so it's easier to differentiate between your own files and node modules.
@@ -244,7 +252,7 @@ Inside the call to `require`, the path to the file needs to be specified.
 
 > A required module prefixed with './' is relative to the file calling > require(). That is, circle.js must be in the same directory as foo.js for > require('./circle') to find it.
 
-Use the '../' prefix for a file in the directory above the current file. 
+Use the '../' prefix for a file in the directory above the current file.
 
 Relative paths are explained in more detail in the [Node Docs](https://nodejs.org/api/modules.html#modules_file_modules)
 
@@ -278,17 +286,16 @@ console.log('node http server listening on http://localhost:' + port);
 
 Inside the call to `http.createServer()' we pass in a function that gets called every time someone connects to the app. The function takes two parameters:
 
-* request  this object contains the information about what the visitor asked for including  name of the page that was requested, the settings, and any fields filled in on a form.
+* ***request*** - this object contains the information about what the visitor asked for including  name of the page that was requested, the settings, and any fields filled in on a form.
 
-* response - this is the object which contains the information that you send back to the user.
+* ***response*** - this is the object which contains the information that you send back to the user.
 
 `res.writeHead(200)` sends back a status code of 200 in the response header to say that everything is okay.
 
 Now start the server! In the command line type:
 
-```
+```js
 node server.js
-
 ```
 
 In the browser navigate to `http://localhost:8000`. You should see your 'Hello world' message!
@@ -301,7 +308,8 @@ We're going to create an index.html file and then serve it up when the user navi
 <!DOCTYPE html>
 <html>
   <body>
-    <h1>Hello World!</h1>
+    <h1>Hello</h1>
+    <img src="http://www.harmonycentral.com/forum/filedata/fetch?id=31139011&d=1398720429"/>
   </body>
 </html>
 ```
@@ -321,19 +329,28 @@ Then send back the html file in the response. Change the call to `res.end` to be
 res.end(index)
 ```
 
-Restart the server and
+Restart the server and you should see the page from index.html!
 
 ## Server Routes
 
-For different requests might want to carry out diferent functions or retrive specific data. These can be specified through the URL of the request and you can create specific routes in your server to handle these requests.
+For different requests you might want to carry out diferent functions or retrive specific data. These can be specified through the URL of the request and you can create specific routes in your server to handle these requests.
 
 Lets look at an example:
 
-You have a button that when clicked sends an http request to /cat
+You have a button that when clicked sends an http request to /cat on the client side. It might look something like this:
 
-http request would look something like this:
+```js
+var request = new XMLHttpRequest();
+  request.onreadystatechange = function() {
+      if(request.readyState === 4) {
+        displayImage(request.responseText);
+      };
+  };
+  request.open("GET", "/cat", true);
+  request.send();
+```
 
-On the server you would look at the url:
+On the server you would look at the url of the request:
 
 ```js
 http.createServer(request, response) {
@@ -343,6 +360,13 @@ http.createServer(request, response) {
     res.end("http://charts.stocktwits.com/production/original_24310845.jpg?1404265667")    
   }
 }
+```
+
+You can also have nested urls e.g. /cat/lion. In the server you can split the request url to get this additional information:
+
+```js
+var type = url.split('/')[2].toString();
+
 ```
 
 ## Generic route handler
@@ -380,35 +404,24 @@ In the scripts part of your package.json add the following line:
 
 ## Event Loop and EventEmitters
 
+If you make a post request and send some data with the request you need a way of reading the data on the server side. For this you need to listen for the 'data' event on the request. 
 
+```js
+var requestData = '';
+request.on('data', function(chunk) {
+    requestData += chunk;
+});
+```
 
-## Streams
+## Environment variables
 
-Look up the CreateReadableStream and CreateWritableStream functions
+If you are using APIs, you don't want to push the API Keys up to Github. To keep the keys secret we want to save them as environment variables.
 
-## Install the NodeJS version manager module
+Follow @nelsonic's tutorial to learn how this works!
+[https://github.com/dwyl/learn-environment-variables](https://github.com/dwyl/learn-environment-variables)
+
+## Install the Node.js version manager module
 
 `npm install -g n`
 
 Use this to set which version of node you are running. In the future you may want to switch between versions of node or use io.js and you can easily do this by typing 'n' into the terminal and toggling the up and down arrows.
-
-## Environment variables
-
-If you are using APIs you don't want to push the API Keys up to Github. To keep the keys secret we want to save them as environment variables.
-
-Start by creating a `.env` file in the root of your project. Add the API keys as key-value pairs in the following format
-
-```js
-CLIENT_ID=1234567890
-CLIENT_SECRET=987654321
-```
-
-Then install the `env2` npm module created by @nelsonic!
-
-```js
-
-npm install --save env2
-
-```
-
-Require the `env2` module into your server file.
