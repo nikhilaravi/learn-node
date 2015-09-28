@@ -1,4 +1,6 @@
 # Learn node
+
+[![Join the chat at https://gitter.im/nikhilaravi/learn-node](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nikhilaravi/learn-node?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 A one day introductory workshop for Founders and Coders Cohort 6
 
 By the end of this workshop you'll be able to answer the following questions:
