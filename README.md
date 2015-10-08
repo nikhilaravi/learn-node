@@ -110,7 +110,7 @@ npm init
 
 ```
 
-This takes you through the process of creating a file called a `package.json` which is a json object that contains information about your project and its dependancies. It looks a bit like this:
+This takes you through the process of creating a file called a `package.json` which is a json object that contains information about your project and its dependencies. It looks a bit like this:
 
 ```js
 {
@@ -143,7 +143,7 @@ This takes you through the process of creating a file called a `package.json` wh
   "engines": {
     "node": ">= 0.10"
   },
-  "dependancies": {
+  "dependedncies": {
      "pre-commit": "^1.0.7"
   }
 }
