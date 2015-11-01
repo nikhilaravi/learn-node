@@ -36,9 +36,9 @@ This is a pretty good intro video:
 Node v4.0.0 is now available and supports lots of ES6 features.
 (ES6 - aka ECMAScript 6 or ECMAScript 2015 - is a newer version of JavaScript with a bunch of new features.  It's not 100% supported everywhere yet, but it will be eventually).
 
-Fo r amore detailed description of node checkout @heron14's [README](nnn)
+For a more detailed description of node checkout [@heron2014](https://github.com/heron2014)'s '['what-is-node tutorial'](https://github.com/node-girls/what-is-node).
 
-If you want to learn ES6 Look up [@benjaminlees](https://github.com/nelsonic)'s [tutorial](https://github.com/benjaminlees/Es6)!
+If you want to learn ES6 Look up [@benjaminlees](https://github.com/benjaminlees)'s [tutorial](https://github.com/benjaminlees/Es6)!
 
 ### So what is a server? And why do I need one?
 
@@ -318,9 +318,8 @@ Inside the call to `http.createServer()' we pass in our handler function. The ha
 
 * ***response*** - this is the object which contains the information that you send back to the user.
 
-`response.writeHead(200)` sends back a status code of 200 in the response header to say that everything is okay.
-
-The response header is a way for the client to know the status of the request ........////
+`response.writeHead(200)` sends back a status code of 200 in the response header to the request to say that everything is okay.  The response headers are used to describe the resource being fetched or the behavior of the server.
+The status code is a 3-digit HTTP status code, like 404. The second argument of the `writeHead` function are the response headers.  This function must be called before `response.end()`.
 
 Now start the server! In the command line type:
 
@@ -389,6 +388,8 @@ function(request, response) {
   var url = request.url
   if (url.indexOf('/cat') > -1) {
     // check if the url contains /cat and if so send back a link to a cat image e.g. from a database or an API
+
+
     response.end('<img src="http://charts.stocktwits.com/production/original_24310845.jpg?1404265667"/>')    
   }
 }
