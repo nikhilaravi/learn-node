@@ -7,16 +7,16 @@ By the end of this workshop you'll be able to answer the following questions:
 * [ ] What is npm? How do you use it?
 * [ ] What are node modules?
 * [ ] What is a package.json?
-* [ ] What are the CommonJS pattern, Module exports and require?
+* [ ] What are 'module exports' and 'require'?
 * [ ] What is a module?
 
 We'll be doing the following things:
-* Installing node
-* Creating a basic 'Hello world' node server
+* Installing Node
+* Creating a basic 'Hello world' Node server
 * Learning how to use the 'fs' core module to read and write from the file system
 * Setting up 'nodemon' for your development environment
 * Creating a route for your server
-* Implementing Callbacks
+* Implementing callback functions
 
 ## What is Node?
 
@@ -36,6 +36,8 @@ This is a pretty good intro video:
 Node v4.0.0 is now available and supports lots of ES6 features.
 (ES6 - aka ECMAScript 6 or ECMAScript 2015 - is a newer version of JavaScript with a bunch of new features.  It's not 100% supported everywhere yet, but it will be eventually).
 
+Fo r amore detailed description of node checkout @heron14's [README](nnn)
+
 If you want to learn ES6 Look up [@benjaminlees](https://github.com/nelsonic)'s [tutorial](https://github.com/benjaminlees/Es6)!
 
 ### So what is a server? And why do I need one?
@@ -51,7 +53,7 @@ In a typical web app a server could perform some of these functions:
 
 Client side code sends requests to a server which sends back data to the front end which can then be displayed.
 
-Front end Javascript is executed in the site visitor's browser whereas server-side code runs on a site's web server
+Front end Javascript is executed in the site visitor's browser whereas server-side code runs on a site's web server.
 
 ## Installing Node
 
@@ -73,7 +75,7 @@ The shell is a great way to test simple one liners. In order to escape from the 
 
 Modules are just small programs you can integrate with the bigger program you are writing.
 
-'Core' Node modules come with Node automatically.  But there are thousands of open-source, 3rd-party Node modules that other clever people have written.  You can download useful 3rd-party modules (packages) from the Node Package Manager.
+'Core' Node modules come with Node automatically.  But there are thousands of open-source, 3rd-party Node modules that other clever people have written.  You can download useful 3rd-party modules (called packages) from the Node Package Manager.
 
 The NPM website says:
 
@@ -292,7 +294,7 @@ var port = process.env.PORT || 8000;
 
 This loads in the `http` module which we will use to create a web server that processes requests using HTTP.
 
-We then need to create handlers that will process the requests.
+When a request reaches the server, we need a way of responding to it. In comes the `handler` function. This is just a function that takes in a `request` and `response` object and sends the response back to the client along with some information.
 
 ```js
 
@@ -310,13 +312,15 @@ http.createServer(handler).listen(port);
 console.log('node http server listening on http://localhost:' + port);
 ```
 
-Inside the call to `http.createServer()' we pass in a handler function that gets called every time someone connects to the app. The function takes two parameters:
+Inside the call to `http.createServer()' we pass in our handler function. The hanlder gets called every time someone connects to the app. Lets take a closer look at the two parameters the handler function takes:
 
 * ***request*** - this object contains the information about what the visitor asked for including  name of the page that was requested, the settings, and any fields filled in on a form.
 
 * ***response*** - this is the object which contains the information that you send back to the user.
 
 `response.writeHead(200)` sends back a status code of 200 in the response header to say that everything is okay.
+
+The response header is a way for the client to know the status of the request ........////
 
 Now start the server! In the command line type:
 
@@ -349,7 +353,7 @@ var fs = require('fs');
 var index = fs.readFileSync(__dirname + '/index.html');
 ```
 
-Then send back the html file in the response. Change the call to `res.end` to be:
+Then send back the html file in the response. Change the call to `response.end` to be:
 
 ```js
 response.end(index)
@@ -359,11 +363,11 @@ Restart the server and you should see the page from index.html!
 
 ## Server Routes
 
-For different requests you might want to carry out diferent functions or retrive specific data. These can be specified through the URL of the request and you can create specific routes in your server to handle these requests.
+For different requests you might want to carry out different functions or retrieve specific data. These can be specified through the URL of the request and you can create specific routes in your server to handle these requests.
 
 Lets look at an example:
 
-You have a button that when clicked sends an http request to /cat on the client side. It might look something like this:
+Lets say you have a button on your home page that when clicked sends an http request with a url of `/cat`.  It might look something like this:
 
 ```js
 var request = new XMLHttpRequest();
@@ -376,7 +380,9 @@ var request = new XMLHttpRequest();
   request.send();
 ```
 
-On the server you would look at the url of the request:
+Don't worry about the `displayImage` function for now - let's pretend it takes html string with an image and adds it to the page.
+
+On the server you would look at the url of the request and if it is `/cat` you want to send back the cat image requested by the client:
 
 ```js
 function(request, response) {
@@ -388,7 +394,7 @@ function(request, response) {
 }
 ```
 
-You can also have nested urls e.g. /cat/lion. In the server you can split the request url to get this additional information:
+You can also have nested urls e.g. `/cat/lion`. In the server you can split the request url to get this additional information:
 
 ```js
 var type = url.split('/')[2].toString();
@@ -397,9 +403,9 @@ var type = url.split('/')[2].toString();
 
 ## Generic route handler
 
-When you add css or js files in your index.html they won't load the same as just a pure front end app. You need to create a route in your server to serve these files
+When you add css or js files in your index.html they won't load the same as just a purely front end app. You need to create a route in your server to serve these files.
 
-Modify your index.html to add a `main.css` file and a `script.js` file e.g.
+Create a `main.css` file and add a link to this file to your `index.html` page e.g.
 
 ```js
 <!DOCTYPE html>
@@ -410,24 +416,30 @@ Modify your index.html to add a `main.css` file and a `script.js` file e.g.
   <body>
     <h1>Hello</h1>
     <img src="http://www.harmonycentral.com/forum/filedata/fetch?id=31139011&d=1398720429"/>
-    <script src="script.js"></script>
   </body>
 </html>
 ```
 
-Add the following code to your server handler as a final else branch. 
+Add the following code to your server handler as a final `else` branch.
 
 ```js
 fs.readFile(__dirname + url, function(err, file){
-      if (err){
-          response.end();
-      } else {
-          var ext = url.split('.')[1];
-          response.writeHead(200, {'Content-Type' : 'text/' + ext});
-          response.end(file);
+  if (err){
+    response.end();
+  } else {
+    var ext = url.split('.')[1];
+    response.writeHead(200, {'Content-Type' : 'text/' + ext});
+    response.end(file);
   }
 }
 ```
+
+Okay lets break down this function:
+
+1. To load the main.css file the client sends a request to the server with a url of `main.css`.
+2. The url is the filename, so the function can read the contents of the file from the filesystem.
+3. To know what type of file it is (e.g. css, js, html), we split the url on the `.`. So for `url = main.css`,  `url.split('.')` would result in an array with two elements: `[main, css]`. We take the second element of the array and set this to be the content type in the response header.
+4. Finally we send back the contents of the file in the response of the http request.  
 
 ## Nodemon
 
@@ -446,7 +458,7 @@ In the scripts part of your package.json add the following line:
 
 # Extensions
 
-## Event Loop and EventEmitters
+## EventEmitters
 
 If you make a post request and send some data with the request you need a way of reading the data on the server side. For this you need to listen for the 'data' event on the request.
 
