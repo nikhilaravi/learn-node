@@ -1,5 +1,5 @@
 # Learn node
-A one day introductory workshop for Founders and Coders Cohort 6
+A one day introductory workshop on Node!
 
 By the end of this workshop you'll be able to answer the following questions:
 * [ ] What is Node? Why do you need it?
@@ -16,7 +16,6 @@ We'll be doing the following things:
 * Learning how to use the 'fs' core module to read and write from the file system
 * Setting up 'nodemon' for your development environment
 * Creating a route for your server
-* Implementing callback functions
 
 ## What is Node?
 
@@ -36,7 +35,7 @@ This is a pretty good intro video:
 Node v4.0.0 is now available and supports lots of ES6 features.
 (ES6 - aka ECMAScript 6 or ECMAScript 2015 - is a newer version of JavaScript with a bunch of new features.  It's not 100% supported everywhere yet, but it will be eventually).
 
-For a more detailed description of node checkout [@heron2014](https://github.com/heron2014)'s '['what-is-node tutorial'](https://github.com/node-girls/what-is-node).
+For a detailed description of node checkout [@heron2014](https://github.com/heron2014)'s '['what-is-node tutorial'](https://github.com/node-girls/what-is-node).
 
 If you want to learn ES6 Look up [@benjaminlees](https://github.com/benjaminlees)'s [tutorial](https://github.com/benjaminlees/Es6)!
 
@@ -70,6 +69,8 @@ Hello World
 ```
 
 The shell is a great way to test simple one liners. In order to escape from the shell, simply press Ctrl + C.
+
+# SECTION 1
 
 ## Node Modules and the Node Package Manager (NPM)
 
@@ -202,13 +203,16 @@ var mandrill = require('mandrill'); //Mandrill is a module for setting up an ema
 
 ```
 
+# SECTION 2
+
 ## Structuring a module
 
-Good practice for modules is to create an object in your file with an immediately invoked function (IIFE) that returns only the methods. This way all the variables aren't exposed and can't be modified by other files.
+Good practice for modules is to create one object in your file and add functions as methods. Then simply export the method from the file. This way all the variables aren't exposed and can't be modified by other files.
 
 ```js
-var Library = (function() {
-  var books = {
+var Library = {};
+
+Library.books: {
     "Emma": {
       author: 'Jane Austen',
       published: 'December 25, 1815'
@@ -221,22 +225,22 @@ var Library = (function() {
       author: 'Marijn Haverbeke',
       published: '2011'
     }
-  };
+};
 
-  function getBookAuthor(name) {
+Library.getBookAuthor = function(name) {
     return books[name].author
-  };
+};
 
-  function getDatePublished(name) {
-    return books[name].published
-  };
+Library.getDatePublished = function(name) {
+  return books[name].published
+};
 
-  return {
-    getBookAuthor: getBookAuthor,
-    getDatePublished: getDatePublished
-  }
+// only export the methods, so other files can't alter the books object.
+module.exports = {
+  getBookAuthor: Library.getBookAuthor,
+  getDatePublished: Library.getDatePublished
+};
 
-}());
 
 ```
 To enable the functions to be used by other files, you need to export the object. Save this file as e.g. library.js. Other files can then import this file and use the methods returned.
@@ -277,9 +281,11 @@ Use the '../' prefix for a file in the directory above the current file.
 
 Relative paths are explained in more detail in the [Node Docs](https://nodejs.org/api/modules.html#modules_file_modules)
 
+# SECTION 3
+
 ## Create your first http server!
 
-Node.js has several modules compiled into the binary e.g. 'http', 'fs', . These are called 'core modules'.  
+Node.js has several modules compiled into the binary e.g. 'http', 'fs', 'querystring' . These are called 'core modules'.  
 
 Core modules are always preferentially loaded.  For instance, require('http') will always return the built in HTTP module, even if there is a file by that name.
 
@@ -329,6 +335,8 @@ node server.js
 
 In the browser navigate to `http://localhost:8000`. You should see your 'Hello world' message!
 
+# SECTION 4
+
 ## Reading from the file system
 
 We're going to create an index.html file and then serve it up when the user navigates to the home page. You can use the template below or create your own!
@@ -359,6 +367,8 @@ response.end(index)
 ```
 
 Restart the server and you should see the page from index.html!
+
+# SECTION 5
 
 ## Server Routes
 
@@ -400,6 +410,8 @@ You can also have nested urls e.g. `/cat/lion`. In the server you can split the 
 var type = url.split('/')[2].toString();
 
 ```
+
+# SECTION 6
 
 ## Generic route handler
 
