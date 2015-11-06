@@ -207,12 +207,18 @@ var mandrill = require('mandrill'); //Mandrill is a module for setting up an ema
 
 ## Structuring a module
 
-Good practice for modules is to create one object in your file and add functions as methods. Then simply export the method from the file. This way all the variables aren't exposed and can't be modified by other files.
+There are two types of modules:
+- An npm module is a 3rd party module that you can download and use into your code.
+- A core module
+- Modules within your project are files that you have created with functions that you can export and use in other files.
+
+
+Create a file called `library.js`.
 
 ```js
-var Library = {};
+"use strict";
 
-Library.books: {
+var books = {
     "Emma": {
       author: 'Jane Austen',
       published: 'December 25, 1815'
@@ -227,31 +233,29 @@ Library.books: {
     }
 };
 
-Library.getBookAuthor = function(name) {
+function getBookAuthor(name) {
     return books[name].author
 };
 
-Library.getDatePublished = function(name) {
+function getDatePublished(name) {
   return books[name].published
 };
 
-// only export the methods, so other files can't alter the books object.
-module.exports = {
-  getBookAuthor: Library.getBookAuthor,
-  getDatePublished: Library.getDatePublished
-};
-
-
 ```
-To enable the functions to be used by other files, you need to export the object. Save this file as e.g. library.js. Other files can then import this file and use the methods returned.
+To enable the functions to be used by other files, you need to export the functions.
 
 Add this line to the end of library.js:
 
 ```js
 
-module.exports = Library;
+module.exports = {
+  getBookAuthor: getBookAuthor,
+  getDatePublished: getDatePublished
+};
 
 ```
+
+Save this file as e.g. library.js. Other files can then import this file and use the methods returned.
 
 In another file (e.g. librarian.js):
 
