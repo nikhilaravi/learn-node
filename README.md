@@ -60,7 +60,7 @@ Download Node from the [NodeJS website](https://docs.npmjs.com/getting-started/i
 
 ### The interactive node.js shell
 
-If node is installed properly, you should be able to invoke the interactive node.js shell by typing `node` into the command line. You can then type any Javascript code and it will be executed.
+If Node is installed properly, you should be able to invoke the interactive node.js shell by typing `node` into the command line. You can then type any Javascript code and it will be executed.
 
 ```js
 $ node
@@ -76,7 +76,7 @@ The shell is a great way to test simple one liners. In order to escape from the 
 
 Modules are just small programs you can integrate with the bigger program you are writing.
 
-'Core' Node modules come with Node automatically.  But there are thousands of open-source, 3rd-party Node modules that other clever people have written.  You can download useful 3rd-party modules (called packages) from the Node Package Manager.
+'Core' Node modules come with Node automatically.  But there are thousands of open-source, 3rd-party Node modules that other clever people have written.  You can download useful 3rd-party modules (also known as "packages") from the Node Package Manager.
 
 The NPM website says:
 
@@ -207,13 +207,14 @@ var mandrill = require('mandrill'); //Mandrill is a module for setting up an ema
 
 ## Structuring a module
 
-There are two types of modules:
-- An npm module is a 3rd party module that you can download and use into your code.
-- A core module
-- Modules within your project are files that you have created with functions that you can export and use in other files.
+We've already mentioned two types of module:
+- Core Node modules that come with Node.js
+- 3rd-party modules that you can download and use into your code (sometimes called "packages")
 
+There's a third type of module in Node - your own modules!
+To keep your project organised, you might separate out some of your code into a different file.  You can `require` a file into another one, just as you would with a core Node module or a 3rd-party module.  Hence, these are *also* called modules.
 
-Create a file called `library.js`.
+We will try this out now.  Create a file called `library.js`.
 
 ```js
 "use strict";
@@ -255,7 +256,7 @@ module.exports = {
 
 ```
 
-Save this file as e.g. library.js. Other files can then import this file and use the methods returned.
+Other files can then import `library.js` and use the methods returned.
 
 In another file (e.g. librarian.js):
 
@@ -265,7 +266,7 @@ var Library = require('./library.js');
 Library.getBookAuthor("Emma");
 
 ```
-Node modules and Javascript files do not need an extension (e.g. 'js') when being specified inside `require()`.  However it can be helpful to add '.js' to the end of your local javscript files so it's easier to differentiate between your own files and node modules.
+Node modules and Javascript files do not need an extension (e.g. 'js') when being specified inside `require()`.  However it can be helpful to add '.js' to the end of your local javascript files so it's easier to differentiate between your own files and node modules.
 
 E.g.
 
@@ -291,7 +292,7 @@ Relative paths are explained in more detail in the [Node Docs](https://nodejs.or
 
 Node.js has several modules compiled into the binary e.g. 'http', 'fs', 'querystring' . These are called 'core modules'.  
 
-Core modules are always preferentially loaded.  For instance, require('http') will always return the built in HTTP module, even if there is a file by that name.
+Core modules are always preferentially loaded.  For instance, require('http') will always return the built-in http module, even if there is a file by that name.
 
 Create a file called server.js and add the following code:
 
@@ -302,9 +303,9 @@ var http = require('http');
 var port = process.env.PORT || 8000;
 ```
 
-This loads in the `http` module which we will use to create a web server that processes requests using HTTP.
+This loads in the `http` module which we will use to create a web server that processes requests using http.
 
-When a request reaches the server, we need a way of responding to it. In comes the `handler` function. This is just a function that takes in a `request` and `response` object and sends the response back to the client along with some information.
+When a request reaches the server, we need a way of responding to it. In comes the `handler` function. This is just a function that takes in a `request` and `response` object and sends the response back to the client along with some information.  We call it handler because it 'handles' requests and responses.
 
 ```js
 
@@ -322,14 +323,14 @@ http.createServer(handler).listen(port);
 console.log('node http server listening on http://localhost:' + port);
 ```
 
-Inside the call to `http.createServer()' we pass in our handler function. The hanlder gets called every time someone connects to the app. Lets take a closer look at the two parameters the handler function takes:
+Inside the call to `http.createServer()'` we pass in our handler function. The handler gets called every time someone connects to the app. Lets take a closer look at the two parameters the handler function takes:
 
 * ***request*** - this object contains the information about what the visitor asked for including  name of the page that was requested, the settings, and any fields filled in on a form.
 
 * ***response*** - this is the object which contains the information that you send back to the user.
 
 `response.writeHead(200)` sends back a status code of 200 in the response header to the request to say that everything is okay.  The response headers are used to describe the resource being fetched or the behavior of the server.
-The status code is a 3-digit HTTP status code, like 404. The second argument of the `writeHead` function are the response headers.  This function must be called before `response.end()`.
+The status code is a 3-digit http status code, like 404. The second argument of the `writeHead` function are the response headers.  This function must be called before `response.end()`.
 
 Now start the server! In the command line type:
 
@@ -358,16 +359,24 @@ We're going to create an index.html file and then serve it up when the user navi
 Back to our server file. Import the 'fs' core node module - this allows reading and writing to the file system.
 
 Then read in the index.html file and save it as a variable. `__dirname` is used to get the name of the directory that the currently file resides in.
+Don't forget the '/' after `__dirname` :wink:
 
 ```js
 var fs = require('fs');
-var index = fs.readFileSync(__dirname + '/index.html');
+fs.readFile(__dirname + '/index.html', function (error, index) {
+  // send the index back to the client!
+});
 ```
 
-Then send back the html file in the response. Change the call to `response.end` to be:
-
+Then send back the html file in the response, with `response.write()`.
 ```js
-response.end(index)
+response.write(index);
+response.end();
+```
+
+Psst!  A shorthand version is to leave out `response.write()` and pass the data directly into `response.end()`.  Change the call to `response.end` to be:
+```js
+response.end(index);
 ```
 
 Restart the server and you should see the page from index.html!
@@ -439,8 +448,9 @@ Create a `main.css` file and add a link to this file to your `index.html` page e
 Add the following code to your server handler as a final `else` branch.
 
 ```js
-fs.readFile(__dirname + url, function(err, file){
-  if (err){
+fs.readFile(__dirname + url, function(error, file){
+  if (error){
+    console.log(error);
     response.end();
   } else {
     var ext = url.split('.')[1];
@@ -450,7 +460,7 @@ fs.readFile(__dirname + url, function(err, file){
 }
 ```
 
-Okay lets break down this function:
+Okay let's break down this function:
 
 1. To load the main.css file the client sends a request to the server with a url of `main.css`.
 2. The url is the filename, so the function can read the contents of the file from the filesystem.
